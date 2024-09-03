@@ -14,7 +14,7 @@ int main()
     stdio_init_all();
 
     led_array leds; // Create an instance of the leds class
-    leds.init(LED_PIN, pio0, 0, 800000); 
+    leds.init(LED_PIN, 12); 
     int led_range[] = {0, 1, 2, 3, 4, -1};  // Define an array of LED indices, with -1 as the sentinel value
 
 
@@ -29,8 +29,10 @@ int main()
         }
         // Test the log system
         log(LogLevel::INFORMATION, "Hello world"); // Log an informational message "Hello world"
-        leds.set_range_rgb(led_range, 255, 0, 0); // Set the led_range LEDs to red
-        sleep_ms(500);
+        leds.set_range_rgb(led_range, 255, 0, 255); // Set the led_range LEDs to red
+        leds.set_all_but_range_rgb(led_range, 0, 0, 0); // Set the led_range LEDs to red
+
+        sleep_ms(50);
     }
 
 
