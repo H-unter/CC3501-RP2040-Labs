@@ -3,7 +3,7 @@
 #include "hardware/gpio.h"
 #include "hardware/pio.h"
 #include "WS2812.pio.h"
-#include "drivers/logging/logging.h"
+#include "drivers/leds/colour.h"
 
 class led_array {
 public:
@@ -51,15 +51,14 @@ public:
     * stored in the `led_data` array. The LED array is then updated to reflect the new color.
     *
     * \param index The index of the LED to be updated. Must be within the bounds of the LED array (0 to num_leds - 1).
-    * \param red The intensity of the red color component (0 to 255).
-    * \param green The intensity of the green color component (0 to 255).
-    * \param blue The intensity of the blue color component (0 to 255).
+    * \param colour The colour object to set the LED to
     *
     * \note If the provided `index` is out of bounds, the function does nothing.
     */
-    void set_individual_rgb(int index, uint8_t red, uint8_t green, uint8_t blue) {
-        if (index >= 0 && index < num_leds) {
-            led_data[index] = rgb_to_led_data(red, green, blue);
+    void set_individual_rgb(int index, colour colour) {
+        bool is_valid_index = (index >= 0 && index < num_leds);
+        if (is_valid_index) {
+            led_data[index] = colour_to_led_data(colour);
             update_leds();
         }
     }
@@ -73,14 +72,12 @@ public:
     *
     * \param indices An array of LED indices that should be updated. The array should be terminated 
     *                with a sentinel value of `-1` to indicate the end of the range.
-    * \param red The intensity of the red color component (0 to 255).
-    * \param green The intensity of the green color component (0 to 255).
-    * \param blue The intensity of the blue color component (0 to 255).
+    * \param colour The colour object to set the LEDs to
     *
     * \note If an index in the `indices` array is out of bounds, that index will be ignored.
     */
-    void set_range_rgb(int indices[], uint8_t red, uint8_t green, uint8_t blue) {
-        uint32_t color = rgb_to_led_data(red, green, blue);
+    void set_range_rgb(int indices[], colour colour) {
+        uint32_t color = colour_to_led_data(colour);
 
         for (int i = 0; i < num_leds; i++) {
             for (int j = 0; j < num_leds; j++) {  // Check if i is in the indices array
@@ -106,14 +103,11 @@ public:
     *
     * \param indices An array of LED indices that should not be updated. The array should be terminated 
     *                with a sentinel value of `-1` to indicate the end of the range.
-    * \param red The intensity of the red color component (0 to 255).
-    * \param green The intensity of the green color component (0 to 255).
-    * \param blue The intensity of the blue color component (0 to 255).
+    * \param colour The colour object to set the LEDs to
     *
     * \note If an index in the `indices` array is out of bounds, that index will be ignored.
     */
-    void set_all_but_range_rgb(int indices[], uint8_t red, uint8_t green, uint8_t blue) {
-        uint32_t color = rgb_to_led_data(red, green, blue);
+    void set_all_but_range_rgb(int indices[], colour colour) {
 
         for (int i = 0; i < num_leds; i++) {
             bool in_range = false;
@@ -127,7 +121,7 @@ public:
                 }
             }
             if (!in_range) {
-                led_data[i] = color;
+                led_data[i] = colour_to_led_data(colour);
             }
         }
 
@@ -176,13 +170,11 @@ private:
     * 32-bit integer. The resulting value is formatted as 0xRRGGBB00, with the red component occupying the most 
     * significant byte, followed by the green and blue components.
     *
-    * \param red The intensity of the red color component (0 to 255).
-    * \param green The intensity of the green color component (0 to 255).
-    * \param blue The intensity of the blue color component (0 to 255).
+    * \param colour The colour object to convert to a 32-bit integer.
     * \return A 32-bit integer representing the combined RGB color, suitable for use in the LED data array.
     */
-    uint32_t rgb_to_led_data(uint8_t red, uint8_t green, uint8_t blue) {
-        return (red << 24) | (green << 16) | (blue << 8);
+    uint32_t colour_to_led_data(colour colour) {
+        return (colour.get_red() << 24) | (colour.get_green() << 16) | (colour.get_blue() << 8);
     }
 
 };
