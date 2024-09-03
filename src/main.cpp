@@ -18,7 +18,7 @@ int main()
     leds.init(LED_PIN, 12); 
     int led_range[] = {0, 1, 2, 3, 4, -1};  // Define an array of LED indices, with -1 as the sentinel value
 
-    colour purple(255, 0, 255); // Create a purple colour object
+    colour snake_colour(255, 0, 255); // Create a purple colour object
     colour black(0, 0, 0); // Create a black colour object
     
 
@@ -33,8 +33,9 @@ int main()
         }
         // Test the log system
         log(LogLevel::INFORMATION, "Hello world"); // Log an informational message "Hello world"
-        leds.set_range_rgb(led_range, purple); // Set the led_range LEDs to red
-        leds.set_all_but_range_rgb(led_range, black); // Set the led_range LEDs to red
+        snake_colour.set_hue(snake_colour.get_hue() + 5); // Increment the hue value of the snake colour
+        leds.set_range_rgb(led_range, snake_colour); 
+        leds.set_all_but_range_rgb(led_range, black); 
 
         sleep_ms(50);
     }
