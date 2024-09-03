@@ -12,27 +12,54 @@ public:
     }
 
     // Getter methods for each RGB component
+
+    /*! \brief Returns the  `uint8_t` Red Value (0-255)*/
     uint8_t get_red() const { return red; }
+    /*! \brief Returns the  `uint8_t` Green Value (0-255)*/
     uint8_t get_green() const { return green; }
+    /*! \brief Returns the  `uint8_t` Blue Value (0-255)*/
     uint8_t get_blue() const { return blue; }
 
     // Getter methods for each HSV component
+    /*! \brief Returns the  `uint8_t` Hue Value (0-255)*/
     uint8_t get_hue() const { return hue; }
+    /*! \brief Returns the  `uint8_t` Saturation Value (0-255)*/
     uint8_t get_saturation() const { return saturation; }
+    /*! \brief Returns the  `uint8_t` Colour Value (0-255)*/
     uint8_t get_value() const { return value; }
 
     // Setter methods for RGB values
+
+    /*! \brief Sets the Red Value (0-255)*/
     void set_red(uint8_t r) { red = r; update_hsv(); }
+    /*! \brief Sets the Green Value (0-255)*/
     void set_green(uint8_t g) { green = g; update_hsv(); }
+    /*! \brief Sets the Blue Value (0-255)*/
     void set_blue(uint8_t b) { blue = b; update_hsv(); }
 
     // Setter methods for HSV values with overflow handling for hue
+
+    /*! \brief Sets the Hue Value of a colour (0-255) and updates the RGB values accordingly.
+    *
+    * \param h The hue value to set (0-255)
+    * \note If the hue value is greater than 255, it will be wrapped around to fit within the range 0-255.
+    */
     void set_hue(uint8_t h) { 
         hue = h; 
         handle_hue_overflow();  // Ensure hue stays within 0-255
         update_rgb(); 
     }
+    
+    /*! \brief Sets the Saturation of a colour (0-255) and updates the RGB values accordingly.
+    *
+    * \param s The saturation value to set (0-255)
+    */
     void set_saturation(uint8_t s) { saturation = s; update_rgb(); }
+
+    /*! \brief Sets the Value of a colour (0-255) and updates the RGB values accordingly.
+    *
+    * \param v The value to set (0-255)
+    */
     void set_value(uint8_t v) { value = v; update_rgb(); }
 
 private:
@@ -40,6 +67,7 @@ private:
     uint8_t hue, saturation, value; // HSV components
 
     // Method to update HSV values based on the current RGB values
+
     void update_hsv() {
         uint8_t cmax = std::max(red, std::max(green, blue)); // Max of R, G, B
         uint8_t cmin = std::min(red, std::min(green, blue)); // Min of R, G, B

@@ -55,7 +55,7 @@ public:
     *
     * \note If the provided `index` is out of bounds, the function does nothing.
     */
-    void set_individual_rgb(int index, colour colour) {
+    void set_colour_individual(int index, colour colour) {
         bool is_valid_index = (index >= 0 && index < num_leds);
         if (is_valid_index) {
             led_data[index] = colour_to_led_data(colour);
@@ -76,7 +76,7 @@ public:
     *
     * \note If an index in the `indices` array is out of bounds, that index will be ignored.
     */
-    void set_range_rgb(int indices[], colour colour) {
+    void set_range_color(int indices[], colour colour) {
         uint32_t color = colour_to_led_data(colour);
 
         for (int i = 0; i < num_leds; i++) {
@@ -103,11 +103,11 @@ public:
     *
     * \param indices An array of LED indices that should not be updated. The array should be terminated 
     *                with a sentinel value of `-1` to indicate the end of the range.
-    * \param colour The colour object to set the LEDs to
+    * \param colour The colour object to set the rest of the LEDs to
     *
     * \note If an index in the `indices` array is out of bounds, that index will be ignored.
     */
-    void set_all_but_range_rgb(int indices[], colour colour) {
+    void set_excluded_range_color(int indices[], colour colour) {
 
         for (int i = 0; i < num_leds; i++) {
             bool in_range = false;
@@ -142,7 +142,7 @@ public:
     }
 
 private:
-    uint32_t led_data[100];  // Fixed-size array on the stack
+    uint32_t led_data[100];  
     uint led_pin;
     int num_leds;  // Number of LEDs in the array
 

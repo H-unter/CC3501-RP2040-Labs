@@ -34,14 +34,11 @@ int main()
         // Test the log system
         log(LogLevel::INFORMATION, "Hello world"); // Log an informational message "Hello world"
         snake_colour.set_hue(snake_colour.get_hue() + 5); // Increment the hue value of the snake colour
-        leds.set_range_rgb(led_range, snake_colour); 
-        leds.set_all_but_range_rgb(led_range, black); 
+        leds.set_range_color(led_range, snake_colour); 
+        leds.set_excluded_range_color(led_range, black); 
 
         sleep_ms(50);
     }
-
-
-
 
     return 0;
 }
