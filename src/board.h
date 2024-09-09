@@ -15,4 +15,4 @@
 
 // Accelerometer
 #define ACCEL_I2C_INSTANCE i2c0
-#define ACCEL_I2C_ADDRESS 0x19
+#define ACCEL_I2C_ADDRESS 0b0011001 // last bit is the read/write bit

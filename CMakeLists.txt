@@ -34,7 +34,6 @@ if(CrossCompiling)
         src/board.h
         src/drivers/logging/logging.cpp
         src/drivers/leds/led_array.cpp
-        src/drivers/leds/led_array.h
         src/drivers/leds/colour.h
         src/tasks/led_task.cpp
         src/tasks/led_task.h
@@ -85,7 +84,6 @@ else()
         src/board.h
         src/drivers/logging/logging.cpp
         src/drivers/leds/led_array.cpp
-        src/drivers/leds/led_array.h
         src/drivers/leds/colour.h
         src/tasks/led_task.cpp
         src/tasks/led_task.h
