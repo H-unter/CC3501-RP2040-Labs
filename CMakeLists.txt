@@ -31,9 +31,13 @@ if(CrossCompiling)
     target_sources(labs 
         PUBLIC
         src/main.cpp
+        src/board.h
         src/drivers/logging/logging.cpp
         src/drivers/leds/led_array.cpp
+        src/drivers/leds/led_array.h
         src/drivers/leds/colour.h
+        src/tasks/led_task.cpp
+        src/tasks/led_task.h
     )
     target_include_directories(labs
         PUBLIC 
@@ -78,9 +82,13 @@ else()
     target_sources(labs 
         PUBLIC
         src/main.cpp
+        src/board.h
         src/drivers/logging/logging.cpp
         src/drivers/leds/led_array.cpp
+        src/drivers/leds/led_array.h
         src/drivers/leds/colour.h
+        src/tasks/led_task.cpp
+        src/tasks/led_task.h
         tests/mocks/pico/stdlib.cpp
         tests/mocks/pico/time.cpp
         tests/mocks/hardware/gpio.cpp
