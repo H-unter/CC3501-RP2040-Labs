@@ -101,40 +101,26 @@ int main()
     uint8_t OUT_Y_H = 0x2B;   // OUT_Y_H register address
     uint8_t OUT_Z_L = 0x2C;   // OUT_Z_L register address
     uint8_t OUT_Z_H = 0x2D;   // OUT_Z_H register address
-    uint8_t data_x_l, data_x_h, data_y_l, data_y_h, data_z_l, data_z_h;  // Variables to store the read data
+    uint8_t accel_read_data[6];  // Array to store the read data
     int16_t x_accel, y_accel, z_accel;  // Variables to store the final acceleration values
 
     uint8_t starting_address = 0x28 | 0x80; // set MSB to 1 to enable multi byte read
 
     while (true){
     // Read the X-axis acceleration data
-    i2c_write_blocking(i2c0, ACCEL_I2C_ADDRESS, &OUT_X_L, 1, true);  // Send register address, keep the bus active (true)
-    i2c_read_blocking(i2c0, ACCEL_I2C_ADDRESS, &data_x_l, 1, false);  // Read the data and send stop condition (false)
-    i2c_write_blocking(i2c0, ACCEL_I2C_ADDRESS, &OUT_X_H, 1, true);  // Send register address, keep the bus active (true)
-    i2c_read_blocking(i2c0, ACCEL_I2C_ADDRESS, &data_x_h, 1, false);  // Read the data and send stop condition (false)
-
-    // Read the Y-axis acceleration data
-    i2c_write_blocking(i2c0, ACCEL_I2C_ADDRESS, &OUT_Y_L, 1, true);  // Send register address, keep the bus active (true)
-    i2c_read_blocking(i2c0, ACCEL_I2C_ADDRESS, &data_y_l, 1, false);  // Read the data and send stop condition (false)
-    i2c_write_blocking(i2c0, ACCEL_I2C_ADDRESS, &OUT_Y_H, 1, true);  // Send register address, keep the bus active (true)
-    i2c_read_blocking(i2c0, ACCEL_I2C_ADDRESS, &data_y_h, 1, false);  // Read the data and send stop condition (false)
-
-    // Read the Z-axis acceleration data
-    i2c_write_blocking(i2c0, ACCEL_I2C_ADDRESS, &OUT_Z_L, 1, true);  // Send register address, keep the bus active (true)
-    i2c_read_blocking(i2c0, ACCEL_I2C_ADDRESS, &data_z_l, 1, false);  // Read the data and send stop condition (false)
-    i2c_write_blocking(i2c0, ACCEL_I2C_ADDRESS, &OUT_Z_H, 1, true);  // Send register address, keep the bus active (true)
-    i2c_read_blocking(i2c0, ACCEL_I2C_ADDRESS, &data_z_h, 1, false);  // Read the data and send stop condition (false)
+    i2c_write_blocking(i2c0, ACCEL_I2C_ADDRESS, &starting_address, 1, true);  // Send register address, keep the bus active (true)
+    i2c_read_blocking(i2c0, ACCEL_I2C_ADDRESS, accel_read_data, 6, false);  // Read the data and send stop condition (false)
     
-    // Combine the lower and higher bytes of the X, Y, and Z acceleration data using bitwise OR
+    
+    // Combine the high and low bytes for X, Y, Z acceleration data
+    x_accel = (int16_t)(accel_read_data[1] << 8 | accel_read_data[0]);  // X-axis data (High byte shifted left, OR'd with low byte)
+    y_accel = (int16_t)(accel_read_data[3] << 8 | accel_read_data[2]);  // Y-axis data
+    z_accel = (int16_t)(accel_read_data[5] << 8 | accel_read_data[4]);  // Z-axis data
 
-    int16_t X = (int16_t)(data_x_l | (data_x_h << 8)) >> 6;
-    int16_t Y = (int16_t)(data_y_l | (data_y_h << 8)) >> 6;
-    int16_t Z = (int16_t)(data_z_l | (data_z_h << 8)) >> 6;
+    // Print the results (optional)
+    //printf("X: %d, Y: %d, Z: %d\n", x_accel, y_accel, z_accel);
 
-    printf("X-axis acceleration: %d\n", X);
-    printf("Y-axis acceleration: %d\n", Y);
-    printf("Z-axis acceleration: %d\n", Z);
-    sleep_ms(500);
+    sleep_ms(100);  // Delay to avoid spamming the output (optional)
 
     }
 
