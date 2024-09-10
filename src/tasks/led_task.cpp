@@ -7,7 +7,7 @@
 #include "WS2812.pio.h" // This header file gets produced during compilation from the WS2812.pio file
 #include "drivers/logging/logging.h"
 #include "led_task.h"
-#include "drivers/leds/led_array.cpp"
+#include "drivers/leds/led_array.h"
 #include "drivers/leds/colour.h"
 
 extern volatile bool stop_task;  // Use extern if stop_led_task is defined globally in another file

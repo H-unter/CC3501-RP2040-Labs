@@ -34,10 +34,9 @@ if(CrossCompiling)
         src/board.h
         src/drivers/logging/logging.cpp
         src/drivers/leds/led_array.cpp
-        src/drivers/leds/colour.h
+        src/drivers/leds/colour.cpp
         src/drivers/accelerometer/accelerometer.cpp
         src/tasks/led_task.cpp
-        src/tasks/led_task.h
     )
     target_include_directories(labs
         PUBLIC 
@@ -85,10 +84,9 @@ else()
         src/board.h
         src/drivers/logging/logging.cpp
         src/drivers/leds/led_array.cpp
-        src/drivers/leds/colour.h
+        src/drivers/leds/colour.cpp
         src/drivers/accelerometer/accelerometer.cpp
         src/tasks/led_task.cpp
-        src/tasks/led_task.h
         tests/mocks/pico/stdlib.cpp
         tests/mocks/pico/time.cpp
         tests/mocks/hardware/gpio.cpp
