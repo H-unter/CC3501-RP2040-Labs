@@ -35,6 +35,7 @@ if(CrossCompiling)
         src/drivers/logging/logging.cpp
         src/drivers/leds/led_array.cpp
         src/drivers/leds/colour.h
+        src/drivers/accelerometer/accelerometer.cpp
         src/tasks/led_task.cpp
         src/tasks/led_task.h
     )
@@ -85,6 +86,7 @@ else()
         src/drivers/logging/logging.cpp
         src/drivers/leds/led_array.cpp
         src/drivers/leds/colour.h
+        src/drivers/accelerometer/accelerometer.cpp
         src/tasks/led_task.cpp
         src/tasks/led_task.h
         tests/mocks/pico/stdlib.cpp

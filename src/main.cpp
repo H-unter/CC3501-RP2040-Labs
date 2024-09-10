@@ -71,10 +71,10 @@ int main()
     */
     // Prepare the register to read
     uint8_t CTRL_REG1_REG = 0x20;   // CTRL_REG1_REG register address
-    uint8_t new_data = 0b01000111;  // New data to write to the register, first 4 bits are the data rate, the others are default values
+    uint8_t new_data_rate_register = 0b01000111;  // New data to write to the register, first 4 bits are the data rate, the others are default values
     uint8_t buf[2];
     buf[0] = CTRL_REG1_REG;
-    buf[1] = new_data; //need to package address and data into one "stream" to write to the register
+    buf[1] = new_data_rate_register; //need to package address and data into one "stream" to write to the register
     int result_datarate = i2c_write_blocking(i2c0, ACCEL_I2C_ADDRESS, buf, 2, true);  // Send register address, keep the bus active (true)
     if (result_datarate !=2) {
         printf("Failed to write to I2C device\n");
@@ -119,6 +119,27 @@ int main()
 
     // Print the results (optional)
     //printf("X: %d, Y: %d, Z: %d\n", x_accel, y_accel, z_accel);
+
+    /*
+    ------------------ CONVERT TO G'S
+    */
+    int bits = 16;
+    int range_gs = 4; //+-2g (range is 4)
+    float gs_per_bit = (float)range_gs / (1 << bits);  // Calculate the number of g's per bit
+    float x_accel_g = x_accel * gs_per_bit;  // Convert the raw data to g's
+    float y_accel_g = y_accel * gs_per_bit;
+    float z_accel_g = z_accel * gs_per_bit;
+
+    // Print the results (optional)
+    printf("X: %.2f g, Y: %.2f g, Z: %.2f g\n", x_accel_g, y_accel_g, z_accel_g);
+
+// Now data_rate_hz contains the correct frequency or -1 for an invalid value
+
+    
+    
+
+    
+
 
     sleep_ms(100);  // Delay to avoid spamming the output (optional)
 
