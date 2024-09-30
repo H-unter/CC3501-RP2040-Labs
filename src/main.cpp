@@ -4,6 +4,7 @@
 #include "pico/stdlib.h"
 #include "tasks/led_task.h"
 #include "tasks/accelerometer_task.h"
+#include "tasks/microphone_task.cpp" // AT THE END INCLUDE A HEADER FOR IT AS WELL
 #include "board.h"
 #include "hardware/gpio.h"
 #include "hardware/pio.h"
@@ -47,6 +48,9 @@ int main()
             break;
         case 1:
             run_accelerometer_task();
+            break;
+        case 2:
+            run_microphone_task();
             break;
         default:
             break;
