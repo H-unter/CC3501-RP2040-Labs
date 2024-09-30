@@ -37,6 +37,7 @@ if(CrossCompiling)
         src/drivers/leds/colour.cpp
         src/drivers/accelerometer/accelerometer.cpp
         src/tasks/led_task.cpp
+        src/tasks/accelerometer_task.cpp
     )
     target_include_directories(labs
         PUBLIC 
@@ -87,6 +88,7 @@ else()
         src/drivers/leds/colour.cpp
         src/drivers/accelerometer/accelerometer.cpp
         src/tasks/led_task.cpp
+        src/tasks/accelerometer_task.cpp
         tests/mocks/pico/stdlib.cpp
         tests/mocks/pico/time.cpp
         tests/mocks/hardware/gpio.cpp
