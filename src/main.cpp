@@ -4,60 +4,53 @@
 #include "pico/stdlib.h"
 #include "tasks/led_task.h"
 #include "tasks/accelerometer_task.h"
-
 #include "board.h"
 #include "hardware/gpio.h"
 #include "hardware/pio.h"
-
 #include "WS2812.pio.h"
 #include "drivers/logging/logging.h"
 #include "drivers/leds/led_array.h"
 #include "drivers/leds/colour.h"
 #include "drivers/accelerometer/accelerometer.h"
 
-volatile bool stop_task = false;
+// Global variables
+volatile bool stop_task = false; // Flag to stop the current task
+volatile int task_index = 0;     // Track the current task
 
-// Interrupt handler for the button
-void stop_task_interrupt(uint gpio, uint32_t events)
+// Increment task number, ensure task_index is updated in the interrupt
+void increment_task_number(int number_tasks)
 {
-    stop_task = true; // Set the flag to stop the current task
+    task_index = (task_index + 1) % number_tasks;
 }
 
-int increment_task_number(int number_tasks, int task_index)
+// Interrupt handler for button press to switch tasks
+void switch_task_interrupt(uint gpio, uint32_t events)
 {
-    return (task_index + 1) % number_tasks;
+    stop_task = true;         // Set the flag to stop the current task
+    increment_task_number(2); // Update the task index to the next task
 }
 
 int main()
 {
     stdio_init_all();
     gpio_init(SW1);
-    gpio_set_irq_enabled_with_callback(SW1, GPIO_IRQ_EDGE_FALL, true, &stop_task_interrupt); // Interrupt-based button press handling
-
+    gpio_set_irq_enabled_with_callback(SW1, GPIO_IRQ_EDGE_FALL, true, &switch_task_interrupt);
     int number_of_tasks = 2;
-    int task_index = 0;
-
+    task_index = 0;
     while (true)
     {
-        if (stop_task) // Check if task should be switched
+        stop_task = false; // reset the flag
+        switch (task_index)
         {
-            task_index = increment_task_number(number_of_tasks, task_index);
-            stop_task = false; // Reset stop flag for the next task
-
-            switch (task_index)
-            {
-            case 0:
-                run_led_task(); // Ensure this checks stop_task and exits when true
-                break;
-            case 1:
-                run_accelerometer_task(); // Ensure this checks stop_task and exits when true
-                break;
-            default:
-                break;
-            }
+        case 0:
+            run_led_task();
+            break;
+        case 1:
+            run_accelerometer_task();
+            break;
+        default:
+            break;
         }
-
-        sleep_ms(50); // Optional: add a short delay to reduce CPU usage
     }
 
     return 0;
