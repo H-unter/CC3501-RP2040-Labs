@@ -36,6 +36,7 @@ if(CrossCompiling)
         src/drivers/leds/led_array.cpp
         src/drivers/leds/colour.cpp
         src/drivers/accelerometer/accelerometer.cpp
+        src/drivers/microphone/microphone.cpp
         src/tasks/led_task.cpp
         src/tasks/accelerometer_task.cpp
         src/tasks/microphone_task.cpp
@@ -67,6 +68,7 @@ if(CrossCompiling)
         hardware_watchdog
         hardware_clocks
         hardware_pwm
+        hardware_adc
     )
 
     pico_add_extra_outputs(labs)
@@ -88,6 +90,7 @@ else()
         src/drivers/leds/led_array.cpp
         src/drivers/leds/colour.cpp
         src/drivers/accelerometer/accelerometer.cpp
+        src/drivers/microphone/microphone.cpp
         src/tasks/led_task.cpp
         src/tasks/accelerometer_task.cpp
         src/tasks/microphone_task.cpp

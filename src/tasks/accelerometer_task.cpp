@@ -60,9 +60,9 @@ int run_accelerometer_task()
         float x_g, y_g, z_g;
 
         accel.get_xyz_gs(&x_g, &y_g, &z_g); // Read and print the accelerometer data in g's
-        printf("X: %.2f g, Y: %.2f g, Z: %.2f g\n", x_g, y_g, z_g);
-        // divide each value by 4 to get 4 bins, (very negative, negative, positive, very positive)
-        //  use this to decide which led to illuminate
+        // printf("X: %.2f g, Y: %.2f g, Z: %.2f g\n", x_g, y_g, z_g);
+        //  divide each value by 4 to get 4 bins, (very negative, negative, positive, very positive)
+        //   use this to decide which led to illuminate
         leds.clear_all();
         // Call the function for each axis
         set_led_based_on_accel(x_g, x_led_start_index, leds, x_base_colour);
@@ -71,6 +71,6 @@ int run_accelerometer_task()
 
         sleep_us(1); // Adjust the delay as needed
     }
-
+    leds.clear_all(); // Clear all LEDs
     return 0;
 }
