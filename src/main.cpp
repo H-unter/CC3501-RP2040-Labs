@@ -28,7 +28,8 @@ void increment_task_number(int number_tasks)
 // Interrupt handler for button press to switch tasks
 void switch_task_interrupt(uint gpio, uint32_t events)
 {
-    stop_task = true;                       // Set the flag to stop the current task
+    stop_task = true; // Set the flag to stop the current task
+    // sleep_ms(100);                          // prevent switch double input
     increment_task_number(number_of_tasks); // Update the task index to the next task
 }
 
@@ -38,8 +39,8 @@ int main()
     gpio_init(SW1);
 
     gpio_set_irq_enabled_with_callback(SW1, GPIO_IRQ_EDGE_FALL, true, &switch_task_interrupt);
-
-    task_index = 0;
+    printf("Hello world \n");
+    task_index = 2;
     while (true)
     {
         stop_task = false; // reset the flag
