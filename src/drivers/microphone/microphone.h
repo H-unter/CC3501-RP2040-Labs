@@ -30,7 +30,7 @@ public:
      * \param buffer Pointer to the buffer to store ADC samples.
      * \param buffer_size The size of the buffer.
      */
-    void read_blocking(uint8_t *buffer, size_t buffer_size);
+    void read_blocking(uint16_t *buffer, size_t buffer_size);
 
 private:
     uint gpio_pin; /*!< GPIO pin for ADC input */

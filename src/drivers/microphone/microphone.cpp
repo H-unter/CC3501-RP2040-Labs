@@ -32,7 +32,7 @@ void microphone::init(uint gpio_pin)
         false, // Disable DMA data request (DREQ)
         1,     // Trigger when at least 1 sample is present
         false, // Disable error bits
-        true   // Shift results to 8 bits
+        false  // Shift results to 8 bits
     );
 
     // Start ADC
@@ -43,11 +43,18 @@ void microphone::init(uint gpio_pin)
 /*! \brief Blocking read of ADC samples.
  *
  * This function reads samples from the ADC and stores them in the provided buffer.
+ * It enables the ADC in free-running mode and blocks until all the requested samples
+ * are read into the buffer. After reading the specified number of samples, the function
+ * stops the ADC from free-running mode and drains the FIFO buffer to discard any
+ * remaining samples that were collected by the ADC but not yet processed.
  *
  * \param buffer Pointer to the buffer to store ADC samples.
- * \param buffer_size The size of the buffer.
+ * \param buffer_size The size of the buffer (i.e., the number of samples to read).
+ *
+ * \note This function drains the FIFO after the required number of samples are read,
+ *       ensuring no leftover data remains in the FIFO.
  */
-void microphone::read_blocking(uint8_t *buffer, size_t buffer_size)
+void microphone::read_blocking(uint16_t *buffer, size_t buffer_size)
 {
     adc_run(true); // Enable free-running mode
 

@@ -3,7 +3,7 @@
 
 // Define the buffer size for the DMA buffer
 #define CAPTURE_DEPTH 1024
-uint8_t capture_buf[CAPTURE_DEPTH]; // Buffer to store samples
+uint16_t capture_buf[CAPTURE_DEPTH]; // Buffer to store samples
 
 /*! \brief Function to run the microphone task, reading samples from the DMA buffer.
  *
