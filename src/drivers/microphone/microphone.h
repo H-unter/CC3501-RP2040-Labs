@@ -27,10 +27,10 @@ public:
      *
      * This function reads samples from the ADC and stores them in a provided buffer.
      *
-     * \param buffer Pointer to the buffer to store ADC samples.
+     * \param microphone_data Pointer to the buffer to store ADC samples.
      * \param buffer_size The size of the buffer.
      */
-    void read_blocking(int16_t *buffer, size_t buffer_size);
+    void read_blocking(int16_t *microphone_data, size_t buffer_size);
 
 private:
     uint gpio_pin; /*!< GPIO pin for ADC input */

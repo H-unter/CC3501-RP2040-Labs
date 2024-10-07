@@ -1,5 +1,6 @@
 #include "microphone.h"
 #include <stdio.h>
+#define DC_OFFSET 2048
 
 // Constructor
 microphone::microphone()
@@ -31,7 +32,6 @@ void microphone::init(uint gpio_pin)
         false       // Shift results to 8 bits
     );
     adc_run(true); // Start ADC
-    printf("Microphone initialized on GPIO pin %d\n", this->gpio_pin);
 }
 
 /*! \brief Blocking read of ADC samples.
@@ -48,17 +48,21 @@ void microphone::init(uint gpio_pin)
  * \note This function drains the FIFO after the required number of samples are read,
  *       ensuring no leftover data remains in the FIFO.
  */
-void microphone::read_blocking(int16_t *buffer, size_t buffer_size)
+void microphone::read_blocking(int16_t *microphone_data, size_t buffer_size)
 {
     adc_run(true); // Enable free-running mode
 
     for (size_t i = 0; i < buffer_size; ++i)
     {
-        buffer[i] = adc_fifo_get_blocking(); // Block until sample is available
-        buffer[i] -= 2048;                   // Subtract DC offset
+        microphone_data[i] = adc_fifo_get_blocking(); // Block until sample is available
     }
-
-    adc_run(false); // Stop free-running mode after reading required samples
-
+    adc_run(false);   // Stop free-running mode after reading required samples
     adc_fifo_drain(); // Drain any leftover samples in the FIFO
+
+    // process the microphone samples:
+    for (size_t i = 0; i < buffer_size; ++i)
+    {
+        microphone_data[i] -= DC_OFFSET;
+        microphone_data[i] = (int16_t)(microphone_data[i] << 5); // Left shift by 5 to scale into Q15 range
+    }
 }
