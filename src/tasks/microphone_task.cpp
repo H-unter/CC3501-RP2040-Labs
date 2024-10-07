@@ -7,7 +7,9 @@
 
 // Define the buffer size for the microphone and FFT
 #define CAPTURE_DEPTH 1024
-uint16_t microphone_sample_buffer[CAPTURE_DEPTH];     // Buffer to store microphone samples (ADC values)
+#define SCALE_FACTOR 32 // why is there a scaling factor
+
+int16_t microphone_sample_buffer[CAPTURE_DEPTH];      // Buffer to store microphone samples (ADC values)
 q15_t fft_input[CAPTURE_DEPTH];                       // Buffer to store Q15 samples for FFT
 q15_t fft_output[CAPTURE_DEPTH + 2];                  // Buffer to store FFT output (complex values)
 q15_t magnitude_squared[CAPTURE_DEPTH / 2];           // Buffer to store magnitude squared results
@@ -22,11 +24,8 @@ q15_t hanning_window[CAPTURE_DEPTH] = {
 // Function to apply the Hanning window to the input data
 void apply_hanning_window(q15_t *input, q15_t *window, size_t length)
 {
-    for (size_t i = 0; i < length; ++i)
-    {
-        // Multiply input by the window and shift by 15 to keep proper scaling
-        input[i] = (input[i] * window[i]) >> 15;
-    }
+    // Use arm_mult_q15 to multiply two Q15 arrays
+    arm_mult_q15(input, window, input, length);
 }
 
 /*! \brief Function to run the microphone task, reading samples from the microphone and performing FFT.
@@ -34,7 +33,7 @@ void apply_hanning_window(q15_t *input, q15_t *window, size_t length)
  * This function initializes the microphone, reads audio samples, converts them to Q15 format,
  * performs FFT, and computes the magnitude squared of the FFT result.
  */
-void run_microphone_task()
+int run_microphone_task()
 {
     // Create an instance of the microphone class
     microphone mic;
@@ -48,35 +47,25 @@ void run_microphone_task()
     arm_rfft_instance_q15 fft_instance;                                                // Create the FFT instance
     arm_rfft_init_q15(&fft_instance, CAPTURE_DEPTH, is_inverse_fft, is_bits_reversed); // Initialize FFT for a 1024-point FFT
 
-    while (!stop_task)
+    sleep_us(1);
+    mic.read_blocking(microphone_sample_buffer, CAPTURE_DEPTH); //  Read from the microphone (blocking until buffer is filled)
+
+    for (int i = 0; i < CAPTURE_DEPTH; ++i)
     {
-        //  Read from the microphone (blocking until buffer is filled)
-        mic.read_blocking(microphone_sample_buffer, CAPTURE_DEPTH);
-
-        // Convert microphone samples (uint16_t) to Q15 format (q15_t)
-
-        for (int i = 0; i < CAPTURE_DEPTH; ++i)
-        {
-            // printf("%d\n", microphone_sample_buffer[i]); // Send the scaled integer over serial
-            //  Subtract DC offset and scale down to fit within Q15 range
-            fft_input[i] = (q15_t)((microphone_sample_buffer[i] - DC_OFFSET) << 5); // Convert to signed Q15
-        }
-
-        // Apply the Hanning window
-        apply_hanning_window(fft_input, hanning_window, CAPTURE_DEPTH);
-
-        // Perform the FFT on the input signal
-        arm_rfft_q15(&fft_instance, fft_input, fft_output);
-
-        // Compute the magnitude squared of the FFT output
-        arm_cmplx_mag_squared_q15(fft_output, magnitude_squared, CAPTURE_DEPTH / 2);
-
-        // Optionally convert Q15 magnitude squared values to float (if needed for external usage)
-        arm_q15_to_float(magnitude_squared, magnitude_squared_float, CAPTURE_DEPTH / 2);
-        // Print out the magnitude squared results (for testing)
-        for (int i = 0; i < CAPTURE_DEPTH / 2; ++i)
-        {
-            printf("%f\n", magnitude_squared_float[i]); // Send the scaled integer over serial
-        }
+        printf("%d", microphone_sample_buffer[i]);
+        microphone_sample_buffer[i] = (int16_t)(microphone_sample_buffer[i] << 3); // Left shift by 3 to scale into Q15 range
+        printf("%d\n", microphone_sample_buffer[i]);
     }
+
+    // Convert the samples to Q15 format
+    arm_scale_q15(fft_input, SCALE_FACTOR, 0, fft_input, CAPTURE_DEPTH);
+    apply_hanning_window(fft_input, hanning_window, CAPTURE_DEPTH);              // Apply the Hanning window
+    arm_rfft_q15(&fft_instance, fft_input, fft_output);                          // Perform the FFT on the input signal
+    arm_cmplx_mag_squared_q15(fft_output, magnitude_squared, CAPTURE_DEPTH / 2); // Compute the magnitude squared of the FFT output
+    arm_q15_to_float(magnitude_squared, magnitude_squared_float, CAPTURE_DEPTH / 2);
+    // for (int i = 0; i < CAPTURE_DEPTH / 2; ++i)
+    // {
+    //     printf("%f\n", magnitude_squared_float[i]);
+    // }
+    return 1;
 }

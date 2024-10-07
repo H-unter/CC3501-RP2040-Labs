@@ -39,7 +39,6 @@ int main()
     gpio_init(SW1);
 
     gpio_set_irq_enabled_with_callback(SW1, GPIO_IRQ_EDGE_FALL, true, &switch_task_interrupt);
-    printf("Hello world \n");
     task_index = 2;
     while (true)
     {
@@ -54,6 +53,7 @@ int main()
             break;
         case 2:
             run_microphone_task();
+            increment_task_number(number_of_tasks);
             break;
         default:
             break;
