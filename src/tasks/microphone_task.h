@@ -8,6 +8,6 @@
 
 extern volatile bool stop_task;
 
-int run_microphone_task();
+void run_microphone_task();
 
 #endif

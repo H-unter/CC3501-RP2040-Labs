@@ -41,7 +41,7 @@ int main()
     gpio_init(SW1);
 
     gpio_set_irq_enabled_with_callback(SW1, GPIO_IRQ_EDGE_FALL, true, &switch_task_interrupt);
-    task_index = 3;
+    task_index = 2;
     while (true)
     {
         stop_task = false; // reset the flag
@@ -55,7 +55,6 @@ int main()
             break;
         case 2:
             run_microphone_task();
-            increment_task_number(number_of_tasks); // this is placeholder
             break;
         case 3:
             run_bluetooth_task();
