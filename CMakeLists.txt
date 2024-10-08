@@ -37,7 +37,7 @@ if(CrossCompiling)
     set(FILTERING OFF)
     set(MATRIX OFF)
     set(STATISTICS OFF)
-    #set(SUPPORT OFF)
+    set(SUPPORT OFF)
     set(TRANSFORM ON)
     set(SVM OFF)
     set(BAYES OFF)
@@ -118,6 +118,7 @@ else()
         src/tasks/led_task.cpp
         src/tasks/accelerometer_task.cpp
         src/tasks/microphone_task.cpp
+        src/tasks/bluetooth_task.cpp
         tests/mocks/pico/stdlib.cpp
         tests/mocks/pico/time.cpp
         tests/mocks/hardware/gpio.cpp
