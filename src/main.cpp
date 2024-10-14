@@ -20,7 +20,7 @@
 // Global variables
 volatile bool stop_task = false; // Flag to stop the current task
 volatile int task_index = 0;     // Track the current task
-static int number_of_tasks = 4;
+static int number_of_tasks = 3;
 // Increment task number, ensure task_index is updated in the interrupt
 void increment_task_number(int number_tasks)
 {
@@ -30,8 +30,7 @@ void increment_task_number(int number_tasks)
 // Interrupt handler for button press to switch tasks
 void switch_task_interrupt(uint gpio, uint32_t events)
 {
-    stop_task = true; // Set the flag to stop the current task
-    // sleep_ms(100);                          // prevent switch double input
+    stop_task = true;                       // Set the flag to stop the current task
     increment_task_number(number_of_tasks); // Update the task index to the next task
 }
 
@@ -41,7 +40,7 @@ int main()
     gpio_init(SW1);
 
     gpio_set_irq_enabled_with_callback(SW1, GPIO_IRQ_EDGE_FALL, true, &switch_task_interrupt);
-    task_index = 2;
+    task_index = 0;
     while (true)
     {
         stop_task = false; // reset the flag

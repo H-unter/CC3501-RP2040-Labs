@@ -32,6 +32,15 @@ public:
      */
     void read_blocking(int16_t *microphone_data, size_t buffer_size);
 
+    /*! \brief Remove DC offset and scale the microphone data.
+     *
+     * This function removes the DC offset from the microphone data and scales it by performing a bit shift
+     *
+     * \param microphone_data Pointer to the buffer containing the microphone data.
+     * \param buffer_size The size of the buffer.
+     */
+    void remove_offset_and_scale(int16_t *microphone_data, size_t buffer_size);
+
 private:
     uint gpio_pin; /*!< GPIO pin for ADC input */
 };

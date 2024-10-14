@@ -11,10 +11,10 @@ const int16_t hanning_window[SAMPLE_SIZE] = {0, 0, 1, 3, 5, 8, 11, 15, 20, 25, 3
 
 void run_microphone_task()
 {
-    led_array leds;                  // Create an instance of the LED array class
-    leds.init(LED_PIN, 12);          // Initialize LED array with 12 LEDs
-    leds.clear_all();                // Clear all LEDs
-    colour base_colour(0, 255, 255); // Base colour for LEDs (cyan)
+    led_array leds;
+    leds.init(LED_PIN, 12);
+    leds.clear_all();
+    colour base_colour(0, 255, 255);
 
     microphone mic;
     mic.init(26);
@@ -23,6 +23,7 @@ void run_microphone_task()
     while (!stop_task)
     {
         mic.read_blocking(time_domain_signal, SAMPLE_SIZE); // Blocking read until buffer is filled
+        mic.remove_offset_and_scale(time_domain_signal, SAMPLE_SIZE);
         apply_hanning_window(time_domain_signal, hanning_window, SAMPLE_SIZE);
         arm_rfft_q15(&fft_instance, time_domain_signal, freq_domain_signal);
         calculate_spectral_density(freq_domain_signal, spectral_density, SAMPLE_SIZE);
@@ -39,6 +40,7 @@ void run_microphone_task()
         // Update LED colors based on the scaled frequency bin sums
         update_leds(leds, base_colour, scaled_frequency_bin_sums);
     }
+    leds.clear_all();
 }
 
 // Function Definitions

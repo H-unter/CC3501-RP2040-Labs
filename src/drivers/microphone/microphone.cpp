@@ -58,8 +58,10 @@ void microphone::read_blocking(int16_t *microphone_data, size_t buffer_size)
     }
     adc_run(false);   // Stop free-running mode after reading required samples
     adc_fifo_drain(); // Drain any leftover samples in the FIFO
+}
 
-    // process the microphone samples:
+void microphone::remove_offset_and_scale(int16_t *microphone_data, size_t buffer_size)
+{
     for (size_t i = 0; i < buffer_size; ++i)
     {
         microphone_data[i] -= DC_OFFSET;
